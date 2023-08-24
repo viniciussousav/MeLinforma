@@ -7,7 +7,5 @@ public record NotificationCreated
     public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public DateTimeOffset SentAt { get; init; }
-    public long DeliveryDelay { get; init; }
-
-    public bool HasDelay => DeliveryDelay > 0;
+    public bool HasDelay { get; init; }
 }

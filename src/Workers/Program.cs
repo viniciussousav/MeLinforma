@@ -11,8 +11,10 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddMassTransit(x =>
         {
             x.AddConsumer<NotificationRequestedConsumer>();
+            x.AddDelayedMessageScheduler();
             x.UsingRabbitMq((ctx, cfg) =>
             {
+                cfg.UseDelayedMessageScheduler();
                 cfg.ConfigureEndpoints(ctx);
             });
         });

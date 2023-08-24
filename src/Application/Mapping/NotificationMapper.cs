@@ -8,8 +8,6 @@ public static class NotificationMapper
 {
     public static NotificationCreated MapToNotificationCreated(this Notification notification)
     {
-        var delayInternalMs = notification.SendAt.Millisecond - DateTimeOffset.UtcNow.Millisecond;
-        
         return new NotificationCreated
         {
             Description = notification.Description,
@@ -17,7 +15,7 @@ public static class NotificationMapper
             NotificationId = notification.Id,
             Title = notification.Title,
             SentAt = notification.SendAt,
-            DeliveryDelay = Math.Clamp(delayInternalMs, 0, Math.Abs(delayInternalMs))
+            HasDelay = DateTimeOffset.Now < notification.SendAt
         };
     }
     
