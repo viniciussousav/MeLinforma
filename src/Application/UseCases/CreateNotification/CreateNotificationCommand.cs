@@ -2,13 +2,10 @@
 
 namespace Application.UseCases.CreateNotification;
 
-public record CreateNotificationCommand
-{
-    public Guid NotificationId { get; init; }
-    public Guid CustomerId { get; init; }
-    public string Title { get; init; } = string.Empty;
-    public string Description { get; init; } = string.Empty;
-    public DateTimeOffset SendAt { get; init; }
-    public NotificationType Type { get; init; }
-    
-}
+public record CreateNotificationCommand(
+    Guid NotificationId, 
+    Guid CustomerId, 
+    string Title, 
+    string Description, 
+    DateTimeOffset SendAt, 
+    NotificationType Type);

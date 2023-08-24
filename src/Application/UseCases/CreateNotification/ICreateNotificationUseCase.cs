@@ -1,8 +1,9 @@
-﻿using Domain.Shared;
+﻿using Domain.Entities;
+using Domain.Shared;
 
 namespace Application.UseCases.CreateNotification;
 
 public interface ICreateNotificationUseCase
 {
-    Task<Result<NotificationCreatedEvent>> Execute(CreateNotificationCommand command);
+    Task<Result<Notification>> Execute(CreateNotificationCommand command);
 }

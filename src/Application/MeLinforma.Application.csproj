@@ -9,7 +9,6 @@
 
     <ItemGroup>
       <Folder Include="UseCases\VerifyNotificationResult\" />
-      <Folder Include="UseCases\ScheduleNotification\" />
       <Folder Include="UseCases\SendNotification\" />
     </ItemGroup>
 
