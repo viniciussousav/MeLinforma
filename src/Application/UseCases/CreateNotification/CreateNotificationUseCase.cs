@@ -2,7 +2,6 @@
 using Domain.Repositories;
 using Domain.Shared;
 using FluentValidation;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.CreateNotification;
@@ -13,19 +12,16 @@ public class CreateNotificationUseCase : ICreateNotificationUseCase
     private readonly INotificationRepository _notificationRepository;
     private readonly ICustomerRepository _customerRepository;
     private readonly IValidator<CreateNotificationCommand> _validator;
-    private readonly IMemoryCache _memoryCache;
 
     public CreateNotificationUseCase(
         ILogger<CreateNotificationUseCase> logger, 
         INotificationRepository notificationRepository,
         ICustomerRepository customerRepository,
-        IValidator<CreateNotificationCommand> validator, 
-        IMemoryCache memoryCache)
+        IValidator<CreateNotificationCommand> validator)
     {
         _logger = logger;
         _notificationRepository = notificationRepository;
         _validator = validator;
-        _memoryCache = memoryCache;
         _customerRepository = customerRepository;
     }
 
@@ -35,7 +31,7 @@ public class CreateNotificationUseCase : ICreateNotificationUseCase
         {
             var notification = await _notificationRepository.Get(command.NotificationId);
 
-            if (notification != Notification.Empty)
+            if (notification == Notification.Empty)
             {
                 _logger.LogWarning("Notification {NotificationId} is already processed", command.NotificationId);
                 return Result.Success(notification);

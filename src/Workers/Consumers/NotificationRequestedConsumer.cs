@@ -10,18 +10,15 @@ public class NotificationRequestedConsumer : IConsumer<NotificationRequested>
 {
     private readonly ILogger<NotificationRequestedConsumer> _logger;
     private readonly IBus _bus;
-    private readonly ICreateNotificationUseCase _createNotificationUseCase;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public NotificationRequestedConsumer(
         ILogger<NotificationRequestedConsumer> logger, 
         IBus bus, 
-        ICreateNotificationUseCase createNotificationUseCase, 
         IServiceScopeFactory serviceScopeFactory)
     {
         _logger = logger;
         _bus = bus;
-        _createNotificationUseCase = createNotificationUseCase;
         _serviceScopeFactory = serviceScopeFactory;
     }
 
@@ -29,10 +26,13 @@ public class NotificationRequestedConsumer : IConsumer<NotificationRequested>
     {
         try
         {
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
+            var useCase = scope.ServiceProvider.GetRequiredService<ICreateNotificationUseCase>();
+                        
             var message = context.Message;
             var command = message.MapToCreateNotificationCommand();
             
-            var result = await _createNotificationUseCase.Execute(command);
+            var result = await useCase.Execute(command);
             
             if (!result.IsValid)
             {
@@ -42,7 +42,7 @@ public class NotificationRequestedConsumer : IConsumer<NotificationRequested>
             
             var notificationCreated = result.Value!.MapToNotificationCreated();
 
-            if (notificationCreated.HasDelay)
+            if (notificationCreated.IsFutureMessage)
             {
                 await PublishScheduledMessage(notificationCreated);
             }

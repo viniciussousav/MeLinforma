@@ -1,4 +1,5 @@
 ﻿using Application.UseCases.CreateNotification;
+using Application.UseCases.SendNotification;
 using Application.Validation;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,12 +8,10 @@ namespace Application.DependencyInjection;
 
 public static class ApplicationExtensions
 {
-    public static IServiceCollection AddApplicationDependencies(this IServiceCollection services)
+    public static void AddApplicationDependencies(this IServiceCollection services)
     {
         services.AddValidators();
         services.AddUseCases();
-        
-        return services;
     }
     
     private static void AddValidators(this IServiceCollection services)
@@ -23,5 +22,6 @@ public static class ApplicationExtensions
     private static void AddUseCases(this IServiceCollection services)
     {
         services.AddScoped<ICreateNotificationUseCase, CreateNotificationUseCase>();
+        services.AddScoped<ISendNotificationUseCase, SendNotificationUseCase>();
     }
 }

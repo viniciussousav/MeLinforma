@@ -4,6 +4,7 @@ public enum NotificationStatus
 {
     Undefined = 0,
     Pending = 1,
-    Succeeded = 2,
-    Failed = 3
+    Sent = 2,
+    Succeeded = 3,
+    Failed = 4
 }

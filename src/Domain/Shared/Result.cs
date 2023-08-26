@@ -12,6 +12,8 @@ public partial class Result
     public List<Error> Errors { get; } = new();
     
     public bool IsValid => !Errors.Any();
+
+    public bool ShouldSkip { get; protected init; }
 }
 
 public class Result<T> : Result
@@ -20,7 +22,12 @@ public class Result<T> : Result
     {
         Value = value;
     }
-
+    
+    public Result(bool skip)
+    {
+        ShouldSkip = skip;
+    }
+    
     public Result(params Error[] errors) : base(errors) { }
 
     public T? Value { get; }

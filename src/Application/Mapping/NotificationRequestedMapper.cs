@@ -3,7 +3,7 @@ using Application.UseCases.CreateNotification;
 
 namespace Application.Mapping;
 
-public static class CreateNotificationRequestMapper
+public static class NotificationRequestedMapper
 {
     public static CreateNotificationCommand MapToCreateNotificationCommand(this Events.NotificationRequested request)
     {

@@ -1,10 +1,11 @@
 ﻿using Domain.Enums;
+using Domain.Shared;
 
 namespace Domain.Entities;
 
 public class Notification
 {
-    public static Notification Empty = new();
+    public static readonly Notification Empty = new();
 
     protected Notification() { }
      
@@ -25,4 +26,12 @@ public class Notification
     public DateTimeOffset SendAt { get; }
     public NotificationType Type { get; }
     public NotificationStatus Status { get; private set; }
+
+    public void Sent()
+    {
+        if (Status != NotificationStatus.Succeeded)
+            throw new DomainException(ErrorMessages.NotificationAlreadyConfirmed(Id, Status));
+
+        Status = NotificationStatus.Sent;
+    }
 }

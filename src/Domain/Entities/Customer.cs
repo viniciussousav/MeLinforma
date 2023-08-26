@@ -2,7 +2,7 @@
 
 public class Customer
 {
-    public static Customer Empty = new();
+    public static readonly Customer Empty = new();
     
     private Customer() { }
 

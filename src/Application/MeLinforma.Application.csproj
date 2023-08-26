@@ -8,8 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="UseCases\VerifyNotificationResult\" />
-      <Folder Include="UseCases\SendNotification\" />
+      <Folder Include="UseCases\ConfirmNotification\" />
     </ItemGroup>
 
     <ItemGroup>
