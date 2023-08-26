@@ -4,6 +4,9 @@ namespace Domain.Shared;
 
 public static class ErrorMessages
 {
-    public static Error NotificationAlreadyConfirmed(Guid notificationId, NotificationStatus status)
-        => new Error("NotificationAlreadyConfirmed", $"Notification {notificationId} can not be set to {status}");
+    public static Error NotificationNotPending(Guid notificationId)
+        => new Error("NotificationNotPending", $"Notification {notificationId} is not pending.");
+    
+    public static Error NotificationNotSent(Guid notificationId)
+        => new Error("NotificationNotSent", $"Notification {notificationId} is not in sent status.");
 }

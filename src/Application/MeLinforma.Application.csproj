@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="UseCases\ConfirmNotification\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Domain\MeLinforma.Domain.csproj" />
     </ItemGroup>
 

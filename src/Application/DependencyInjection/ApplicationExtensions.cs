@@ -1,4 +1,6 @@
-﻿using Application.UseCases.CreateNotification;
+﻿using Application.UseCases.ConfirmNotification;
+using Application.UseCases.CreateNotification;
+using Application.UseCases.FailNotification;
 using Application.UseCases.SendNotification;
 using Application.Validation;
 using FluentValidation;
@@ -23,5 +25,7 @@ public static class ApplicationExtensions
     {
         services.AddScoped<ICreateNotificationUseCase, CreateNotificationUseCase>();
         services.AddScoped<ISendNotificationUseCase, SendNotificationUseCase>();
+        services.AddScoped<IConfirmNotificationUseCase, ConfirmNotificationUseCase>();
+        services.AddScoped<IFailNotificationUseCase, FailNotificationUseCase>();
     }
 }

@@ -2,5 +2,5 @@
 
 public interface IWebNotificationHub
 {
-    Task Execute(Guid customerId, string title, string description);
+    Task TryNotifyNow(Guid customerId, string title, string description);
 }

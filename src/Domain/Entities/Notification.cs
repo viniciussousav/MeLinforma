@@ -17,6 +17,7 @@ public class Notification
         Description = description;
         SendAt = sendAt;
         Type = type;
+        Status = NotificationStatus.Pending;
     }
 
     public Guid Id { get; }
@@ -29,9 +30,25 @@ public class Notification
 
     public void Sent()
     {
-        if (Status != NotificationStatus.Succeeded)
-            throw new DomainException(ErrorMessages.NotificationAlreadyConfirmed(Id, Status));
+        if (Status != NotificationStatus.Pending)
+            throw new DomainException(ErrorMessages.NotificationNotPending(Id));
 
         Status = NotificationStatus.Sent;
+    }
+    
+    public void Confirm()
+    {
+        if (Status != NotificationStatus.Sent)
+            throw new DomainException(ErrorMessages.NotificationNotSent(Id));
+        
+        Status = NotificationStatus.Succeeded;
+    }
+    
+    public void Fail()
+    {
+        if (Status != NotificationStatus.Sent)
+            throw new DomainException(ErrorMessages.NotificationNotSent(Id));
+        
+        Status = NotificationStatus.Failed;
     }
 }

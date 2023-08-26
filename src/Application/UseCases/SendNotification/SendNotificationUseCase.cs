@@ -38,14 +38,14 @@ public class SendNotificationUseCase : ISendNotificationUseCase
 
             if (notification.Status == NotificationStatus.Succeeded)
             {
-                _logger.LogError(
-                    "Notification {NotificationId} was already sent, skipping to avoid duplicated notifications",
-                    command.NotificationId);
+                _logger.LogError("Notification {NotificationId} was already sent, skipping to avoid duplicated notifications", command.NotificationId);
                 return Result.Skip<EmptyResult>();
             }
 
             notification.Sent();
-            await _notificationHub.Execute(command.CustomerId, command.Title, command.Description);
+            await _notificationRepository.Update(notification);
+            
+            await _notificationHub.TryNotifyNow(command.CustomerId, command.Title, command.Description);
 
             return Result.Success(EmptyResult.Empty);
         }
@@ -56,7 +56,7 @@ public class SendNotificationUseCase : ISendNotificationUseCase
         }
         catch (Exception e)
         {
-            _logger.LogError(e,"An unexpected Exception occured at {SendNotificationUseCase}", nameof(SendNotificationUseCase));
+            _logger.LogError(e,"An unexpected exception occured handling Notification {NotificationId}", command.NotificationId);
             throw;
         }
     }

@@ -55,6 +55,8 @@ public class CreateNotificationUseCase : ICreateNotificationUseCase
                 var error = new Error("Customer", $"Customer {command.CustomerId} is not valid to be notified");
                 return Result.Fail<Notification>(error);
             }
+
+            await _notificationRepository.Create(notification);
             
             _logger.LogError("Notification {NotificationId} successfully created", command.NotificationId);
             return Result.Success(notification);
