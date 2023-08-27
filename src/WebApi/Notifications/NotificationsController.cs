@@ -26,21 +26,4 @@ public class NotificationsController : ControllerBase
             return Problem(title: e.Message, detail: e.StackTrace);
         }
     }
-    
-    [HttpPost("create")]
-    public async Task<IActionResult> CreateNotification(
-        [FromServices] INotificationRepository notificationRepository, 
-        [FromBody] CreateNotificationCommand request)
-    {
-        try
-        {
-            var notification = request.MapToNotification();
-            await notificationRepository.Create(notification);
-            return Ok(notification);
-        }
-        catch (Exception e)
-        {
-            return Problem(title: e.Message, detail: e.StackTrace);
-        }
-    }
 }

@@ -19,11 +19,5 @@ public class NotificationEntityTypeConfiguration : IEntityTypeConfiguration<Noti
         builder.Property(n => n.SendAt).IsRequired();
         builder.Property(n => n.Status).IsRequired();
         builder.Property(n => n.Type).IsRequired();
-
-        builder
-            .HasOne<Customer>()
-            .WithMany()
-            .HasForeignKey(n => n.CustomerId);
-
     }
 }

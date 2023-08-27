@@ -42,6 +42,7 @@ app.UseHttpsRedirection();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<MeLinformaDbContext>();
+    dbContext.Database.EnsureDeleted();
     dbContext.Database.EnsureCreated();
 }
 
