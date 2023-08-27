@@ -16,23 +16,14 @@ public class CustomersController : ControllerBase
         _customerRepository = customerRepository;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> RegisterCustomer(CreateCustomerRequest request)
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.Email))
-                return BadRequest(new{ Error = "Email can not be null"});
-
-            var customerWithSameEmail = await _customerRepository.Get(request.Email);
-        
-            if (customerWithSameEmail != Customer.Empty)
-                return Conflict(new{ Error = $"Email {request.Email} already exists"});
-
-            var customer = new Customer(request.Email);
-            await _customerRepository.Create(customer);
-
-            return Ok(customer);
+            var customers = await _customerRepository.GetAll();
+            
+            return Ok(customers);
         }
         catch (Exception e)
         {
@@ -58,18 +49,70 @@ public class CustomersController : ControllerBase
         }
     }
     
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    [HttpPost]
+    public async Task<IActionResult> RegisterCustomer(CreateCustomerRequest request)
     {
         try
         {
-            var customers = await _customerRepository.GetAll();
-            
-            return Ok(customers);
+            if (string.IsNullOrWhiteSpace(request.Email))
+                return BadRequest(new{ Error = "Email can not be null"});
+
+            var customerWithSameEmail = await _customerRepository.Get(request.Email);
+        
+            if (customerWithSameEmail != Customer.Empty)
+                return Conflict(new{ Error = $"Email {request.Email} already exists"});
+
+            var customer = new Customer(request.Email);
+            await _customerRepository.Create(customer);
+
+            return Ok(customer);
         }
         catch (Exception e)
         {
             return Problem(title: e.Message, detail: e.StackTrace);
         }
     }
+    
+    [HttpPut("{id:guid}/notifications/subscribe")]
+    public async Task<IActionResult> Subscribe(Guid id, [FromServices] ICustomerRepository customerRepository)
+    {
+        try
+        {
+            var customer = await _customerRepository.Get(id);
+
+            if (customer == Customer.Empty)
+                return NotFound(new {Error = $"Customer {id} not found"});
+            
+            customer.Subscribe();
+            await customerRepository.Update(customer);
+
+            return Ok(customer);
+        }
+        catch (Exception e)
+        {
+            return Problem(title: e.Message, detail: e.StackTrace);
+        }
+    }
+    
+    [HttpPut("{id:guid}/notifications/unsubscribe")]
+    public async Task<IActionResult> Unsubscribe(Guid id, [FromServices] ICustomerRepository customerRepository)
+    {
+        try
+        {
+            var customer = await _customerRepository.Get(id);
+
+            if (customer == Customer.Empty)
+                return NotFound(new {Error = $"Customer {id} not found"});
+            
+            customer.Unsubscribe();
+            await customerRepository.Update(customer);
+            
+            return Ok(customer);
+        }
+        catch (Exception e)
+        {
+            return Problem(title: e.Message, detail: e.StackTrace);
+        }
+    }
+   
 }

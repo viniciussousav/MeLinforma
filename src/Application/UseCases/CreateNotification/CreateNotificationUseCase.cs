@@ -52,7 +52,7 @@ public class CreateNotificationUseCase : ICreateNotificationUseCase
 
             var customer = await _customerRepository.Get(command.CustomerId);
 
-            if (customer == Customer.Empty || !customer.Notify)
+            if (customer == Customer.Empty || !customer.Subscribed)
             {
                 _logger.LogError("Customer {CustomerId} is not valid", command.CustomerId);
                 var error = new Error("Customer", $"Customer {command.CustomerId} is not valid to be notified");

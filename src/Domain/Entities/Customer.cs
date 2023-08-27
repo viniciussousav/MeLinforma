@@ -10,20 +10,20 @@ public class Customer
     {
         Id = Guid.NewGuid();
         Email = email;
-        Notify = true;
+        Subscribed = true;
     }
 
     public Guid Id { get; }
     public string Email { get; } = string.Empty;
-    public bool Notify { get; private set; }
+    public bool Subscribed { get; private set; }
     
-    public void DisableNotifications()
+    public void Unsubscribe()
     {
-        Notify = false;
+        Subscribed = false;
     }
     
-    public void EnableNotifications()
+    public void Subscribe()
     {
-        Notify = true;
+        Subscribed = true;
     }
 }
