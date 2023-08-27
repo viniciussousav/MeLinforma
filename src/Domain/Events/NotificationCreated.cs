@@ -7,5 +7,5 @@ public record NotificationCreated
     public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public DateTimeOffset SentAt { get; init; }
-    public bool IsFutureMessage { get; init; }
+    public bool IsScheduled { get; init; }
 }

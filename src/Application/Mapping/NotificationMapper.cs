@@ -15,7 +15,7 @@ public static class NotificationMapper
             NotificationId = notification.Id,
             Title = notification.Title,
             SentAt = notification.SendAt,
-            IsFutureMessage = DateTimeOffset.Now < notification.SendAt
+            IsScheduled = DateTimeOffset.Now < notification.SendAt
         };
     }
 }

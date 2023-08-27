@@ -43,7 +43,7 @@ public class NotificationRequestedConsumer : IConsumer<NotificationRequested>
             
             var notificationCreated = result.Value!.MapToNotificationCreated();
 
-            if (notificationCreated.IsFutureMessage)
+            if (notificationCreated.IsScheduled)
             {
                 await PublishScheduledMessage(notificationCreated);
                 return;
