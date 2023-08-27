@@ -1,13 +1,11 @@
-﻿using Domain.Enums;
+﻿namespace Domain.Events;
 
-namespace Application.UseCases.SendNotification;
-
-public record SendNotificationCommand
+public record NotificationCreated
 {
     public Guid NotificationId { get; init; }
     public Guid CustomerId { get; init; }
     public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
-
-    public NotificationType Type { get; init; }
+    public DateTimeOffset SentAt { get; init; }
+    public bool IsFutureMessage { get; init; }
 }

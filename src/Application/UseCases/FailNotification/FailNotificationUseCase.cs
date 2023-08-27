@@ -1,6 +1,5 @@
 ﻿using Domain.Enums;
 using Domain.Repositories;
-using Domain.Shared;
 using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.FailNotification;

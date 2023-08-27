@@ -1,18 +1,28 @@
-﻿using Application.Events;
-using Application.UseCases.CreateNotification;
+﻿using Application.UseCases.CreateNotification;
+using Domain.Events;
+using Domain.Shared;
 
 namespace Application.Mapping;
 
 public static class NotificationRequestedMapper
 {
-    public static CreateNotificationCommand MapToCreateNotificationCommand(this Events.NotificationRequested request)
+    public static CreateNotificationCommand MapToCreateNotificationCommand(this NotificationRequested request)
     {
         return new CreateNotificationCommand(
-            request.NotificationInfo.NotificationId,
-            request.NotificationInfo.CustomerId,
-            request.NotificationInfo.Title,
-            request.NotificationInfo.Description,
-            request.NotificationInfo.SendAt,
-            request.NotificationInfo.Type);
+            request.NotificationId,
+            request.CustomerId,
+            request.Title,
+            request.Description,
+            request.SendAt,
+            request.Type);
+    }
+    
+    public static NotificationFailed MapToNotificationFailed(this NotificationRequested request, IEnumerable<Error> errors)
+    {
+        return new NotificationFailed
+        {
+            NotificationId = request.NotificationId,
+            Errors = errors
+        };
     }
 }

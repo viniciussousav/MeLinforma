@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
 using Infrastructure.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
@@ -13,9 +14,19 @@ public class CustomerRepository : ICustomerRepository
         _dbContext = dbContext;
     }
 
+    public async Task<IEnumerable<Customer>> GetAll()
+    {
+        return await _dbContext.Customers.ToListAsync();
+    }
+    
     public async Task<Customer> Get(Guid id)
     {
-        return await _dbContext.Customers.FindAsync(new { Id = id }) ?? Customer.Empty;
+        return await _dbContext.Customers.FirstOrDefaultAsync(c => c.Id == id) ?? Customer.Empty;
+    }
+    
+    public async Task<Customer> Get(string email)
+    {
+        return await _dbContext.Customers.FirstOrDefaultAsync(c => c.Email == email) ?? Customer.Empty;
     }
 
     public async Task Create(Customer customer)

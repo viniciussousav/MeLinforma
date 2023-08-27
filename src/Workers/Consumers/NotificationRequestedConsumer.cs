@@ -1,6 +1,6 @@
-﻿using Application.Events;
-using Application.Mapping;
+﻿using Application.Mapping;
 using Application.UseCases.CreateNotification;
+using Domain.Events;
 using MassTransit;
 
 namespace Workers.Consumers;
@@ -36,8 +36,9 @@ public class NotificationRequestedConsumer : IConsumer<NotificationRequested>
             
             if (!result.IsValid)
             {
-                var notificationFailed = result.Value!.MapToNotificationFailed(result.Errors);
+                var notificationFailed = message.MapToNotificationFailed(result.Errors);
                 await PublishNotificationFailed(notificationFailed);
+                return;
             }
             
             var notificationCreated = result.Value!.MapToNotificationCreated();
@@ -45,6 +46,7 @@ public class NotificationRequestedConsumer : IConsumer<NotificationRequested>
             if (notificationCreated.IsFutureMessage)
             {
                 await PublishScheduledMessage(notificationCreated);
+                return;
             }
             
             await _bus.Publish(message: notificationCreated);

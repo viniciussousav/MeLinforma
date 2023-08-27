@@ -9,4 +9,7 @@ public static class ErrorMessages
     
     public static Error NotificationNotSent(Guid notificationId)
         => new Error("NotificationNotSent", $"Notification {notificationId} is not in sent status.");
+    
+    public static Error NotificationAlreadyConfirmed(Guid notificationId)
+        => new Error("NotificationAlreadyConfirmed", $"Notification {notificationId} is already confirmed.");
 }

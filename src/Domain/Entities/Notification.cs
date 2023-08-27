@@ -9,9 +9,9 @@ public class Notification
 
     protected Notification() { }
      
-    public Notification(Guid customerId, string title, string description, DateTimeOffset sendAt, NotificationType type)
+    public Notification(Guid id, Guid customerId, string title, string description, DateTimeOffset sendAt, NotificationType type)
     {
-        Id = Guid.NewGuid();
+        Id = id;
         CustomerId = customerId;
         Title = title;
         Description = description;
@@ -46,8 +46,8 @@ public class Notification
     
     public void Fail()
     {
-        if (Status != NotificationStatus.Sent)
-            throw new DomainException(ErrorMessages.NotificationNotSent(Id));
+        if (Status == NotificationStatus.Succeeded)
+            throw new DomainException(ErrorMessages.NotificationAlreadyConfirmed(Id));
         
         Status = NotificationStatus.Failed;
     }

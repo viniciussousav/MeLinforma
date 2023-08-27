@@ -9,13 +9,27 @@ services:
       - "5672:5672"
       - "15672:15672"
   
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+  postgres-melinforma:
+    image: postgres
+    container_name: postgres-melinforma
+    restart: always
     environment:
-      - SA_PASSWORD=Pass@word
-      - ACCEPT_EULA=Y
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_USER: testuser
+      POSTGRES_DB: COLABORA
+      PGDATA: /data/postgres
     ports:
-      - "5434:1433"
+      - "8080:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "viniciussousavilela@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres-melinforma
 
 networks:
   default:

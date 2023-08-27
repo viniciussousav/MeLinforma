@@ -11,6 +11,8 @@ public class NotificationEntityTypeConfiguration : IEntityTypeConfiguration<Noti
         builder.ToTable(nameof(Notification));
 
         builder.HasKey(n => n.Id);
+        builder.Property(n => n.Id);
+        
         builder.Property(n => n.CustomerId).IsRequired();
         builder.Property(n => n.Title).IsRequired();
         builder.Property(n => n.Description).IsRequired();

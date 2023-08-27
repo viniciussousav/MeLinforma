@@ -9,14 +9,14 @@ namespace Infrastructure.Persistence.Extensions;
 
 public static class PersistenceExtensions
 {
-    public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
+    public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
+        var connectionString = configuration.GetConnectionString("MeLinformaDbContext");
+        
         services.AddDbContext<MeLinformaDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("MeLinformaDbContext")));
+            options.UseNpgsql(connectionString));
 
         services.AddRepositories();
-        
-        return services;
     }
     
     private static void AddRepositories(this IServiceCollection services)

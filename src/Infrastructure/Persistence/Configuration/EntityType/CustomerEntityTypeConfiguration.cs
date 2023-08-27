@@ -11,6 +11,7 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
         builder.ToTable(nameof(Customer));
 
         builder.HasKey(c => c.Id);
+        builder.Property(c => c.Id);
         builder.Property(c => c.Email).IsRequired();
         builder.Property(c => c.Notify).IsRequired();
     }

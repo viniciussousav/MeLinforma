@@ -1,5 +1,5 @@
-﻿using Application.Events;
-using Domain.Entities;
+﻿using Domain.Entities;
+using Domain.Events;
 using Domain.Shared;
 
 namespace Application.Mapping;
@@ -16,15 +16,6 @@ public static class NotificationMapper
             Title = notification.Title,
             SentAt = notification.SendAt,
             IsFutureMessage = DateTimeOffset.Now < notification.SendAt
-        };
-    }
-    
-    public static NotificationFailed MapToNotificationFailed(this Notification notification, IEnumerable<Error> errors)
-    {
-        return new NotificationFailed
-        {
-            NotificationId = notification.Id,
-            Errors = errors
         };
     }
 }

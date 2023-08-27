@@ -4,7 +4,7 @@ public class Customer
 {
     public static readonly Customer Empty = new();
     
-    private Customer() { }
+    protected Customer() { }
 
     public Customer(string email)
     {

@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
 using Infrastructure.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
@@ -15,7 +16,7 @@ public class NotificationRepository : INotificationRepository
 
     public async Task<Notification> Get(Guid id)
     {
-        return await _dbContext.Notifications.FindAsync(new { Id = id }) ?? Notification.Empty;
+        return await _dbContext.Notifications.FirstOrDefaultAsync(n => n.Id == id) ?? Notification.Empty;
     }
     
     public async Task Create(Notification notification)

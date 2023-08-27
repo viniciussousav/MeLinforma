@@ -1,11 +1,13 @@
-﻿namespace Application.Events;
+﻿using Domain.Enums;
 
-public record NotificationCreated
+namespace Domain.Events;
+
+public record NotificationRequested
 {
     public Guid NotificationId { get; init; }
     public Guid CustomerId { get; init; }
     public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
-    public DateTimeOffset SentAt { get; init; }
-    public bool IsFutureMessage { get; init; }
+    public DateTimeOffset SendAt { get; init; }
+    public NotificationType Type { get; init; }
 }

@@ -11,15 +11,15 @@ public class SendNotificationUseCase : ISendNotificationUseCase
 {
     private readonly ILogger<SendNotificationUseCase> _logger;
     private readonly INotificationRepository _notificationRepository;
-    private readonly IWebNotificationHub _notificationHub;
+    // private readonly IWebNotificationHub _notificationHub;
 
     public SendNotificationUseCase(
         ILogger<SendNotificationUseCase> logger, 
-        IWebNotificationHub notificationHub, 
+        // IWebNotificationHub notificationHub, 
         INotificationRepository notificationRepository)
     {
         _logger = logger;
-        _notificationHub = notificationHub;
+        // _notificationHub = notificationHub;
         _notificationRepository = notificationRepository;
     }
 
@@ -42,11 +42,18 @@ public class SendNotificationUseCase : ISendNotificationUseCase
                 return Result.Skip<EmptyResult>();
             }
 
+            // switch (command.Type)
+            // {
+            //     case NotificationType.Web:
+            //         await _notificationHub.TryNotifyNow(command.CustomerId, command.Title, command.Description);
+            //         break;
+            //     default:
+            //         throw new DomainException(ErrorMessages.NotSupportedNotificationType(command.NotificationId));
+            // }
+            
             notification.Sent();
             await _notificationRepository.Update(notification);
             
-            await _notificationHub.TryNotifyNow(command.CustomerId, command.Title, command.Description);
-
             return Result.Success(EmptyResult.Empty);
         }
         catch (DomainException e)

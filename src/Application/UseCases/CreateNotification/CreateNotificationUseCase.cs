@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Mapping;
+using Domain.Entities;
 using Domain.Repositories;
 using Domain.Shared;
 using FluentValidation;
@@ -31,13 +32,15 @@ public class CreateNotificationUseCase : ICreateNotificationUseCase
         {
             var notification = await _notificationRepository.Get(command.NotificationId);
 
-            if (notification == Notification.Empty)
+            if (notification != Notification.Empty)
             {
                 _logger.LogWarning("Notification {NotificationId} is already processed", command.NotificationId);
                 return Result.Success(notification);
             }
             
+            notification = command.MapToNotification();
             await _notificationRepository.Create(notification);
+            
             var validationResult = await _validator.ValidateAsync(command);
             
             if (!validationResult.IsValid)
@@ -56,9 +59,7 @@ public class CreateNotificationUseCase : ICreateNotificationUseCase
                 return Result.Fail<Notification>(error);
             }
 
-            await _notificationRepository.Create(notification);
-            
-            _logger.LogError("Notification {NotificationId} successfully created", command.NotificationId);
+            _logger.LogInformation("Notification {NotificationId} successfully created", command.NotificationId);
             return Result.Success(notification);
         }
         catch (Exception e)

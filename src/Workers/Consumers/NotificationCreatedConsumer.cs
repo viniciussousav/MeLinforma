@@ -1,6 +1,6 @@
-﻿using Application.Events;
-using Application.Mapping;
+﻿using Application.Mapping;
 using Application.UseCases.SendNotification;
+using Domain.Events;
 using MassTransit;
 
 namespace Workers.Consumers;
@@ -34,8 +34,8 @@ public class NotificationCreatedConsumer : IConsumer<NotificationCreated>
             {
                 var notificationFailed = notificationCreated.MapToNotificationFailed();
                 await _bus.Publish(notificationFailed);
-                
                 _logger.LogWarning("Notification {NotificationId} failed message produced", notificationCreated.NotificationId);
+                return;
             }
 
             var notificationSent = notificationCreated.MapToNotificationSent();

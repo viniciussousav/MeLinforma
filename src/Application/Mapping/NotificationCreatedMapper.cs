@@ -1,5 +1,5 @@
-﻿using Application.Events;
-using Application.UseCases.SendNotification;
+﻿using Application.UseCases.SendNotification;
+using Domain.Events;
 using Domain.Shared;
 
 namespace Application.Mapping;

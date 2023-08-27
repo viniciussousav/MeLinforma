@@ -1,5 +1,4 @@
 using Application.DependencyInjection;
-using Application.Services;
 using Infrastructure.DependencyInjection;
 using Infrastructure.Persistence.Contexts;
 using MassTransit;
@@ -15,6 +14,9 @@ builder.Services.AddApplicationDependencies();
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<NotificationRequestedConsumer>();
+    x.AddConsumer<NotificationCreatedConsumer>();
+    x.AddConsumer<NotificationSentConsumer>();
+    x.AddConsumer<NotificationFailedConsumer>();
     x.AddDelayedMessageScheduler();
     x.UsingRabbitMq((ctx, cfg) =>
     {

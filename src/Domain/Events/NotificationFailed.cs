@@ -1,6 +1,6 @@
 ﻿using Domain.Shared;
 
-namespace Application.Events;
+namespace Domain.Events;
 
 public record NotificationFailed
 {
