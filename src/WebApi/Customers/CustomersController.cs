@@ -9,19 +9,12 @@ namespace WebApi.Customers;
 [Route("api/v1/customers")]
 public class CustomersController : ControllerBase
 {
-    private readonly ICustomerRepository _customerRepository;
-
-    public CustomersController(ICustomerRepository customerRepository)
-    {
-        _customerRepository = customerRepository;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromServices] ICustomerRepository customerRepository)
     {
         try
         {
-            var customers = await _customerRepository.GetAll();
+            var customers = await customerRepository.GetAll();
             
             return Ok(customers);
         }
@@ -32,11 +25,11 @@ public class CustomersController : ControllerBase
     }
     
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> Get(Guid id)
+    public async Task<IActionResult> Get(Guid id, [FromServices] ICustomerRepository customerRepository)
     {
         try
         {
-            var customer = await _customerRepository.Get(id);
+            var customer = await customerRepository.Get(id);
         
             if (customer == Customer.Empty)
                 return NotFound(new{ Error = $"Customer With Id {id} not found"});
@@ -50,22 +43,45 @@ public class CustomersController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> RegisterCustomer(CreateCustomerRequest request)
+    public async Task<IActionResult> RegisterCustomer(CreateCustomerRequest request, [FromServices] ICustomerRepository customerRepository)
     {
         try
         {
             if (string.IsNullOrWhiteSpace(request.Email))
                 return BadRequest(new{ Error = "Email can not be null"});
 
-            var customerWithSameEmail = await _customerRepository.Get(request.Email);
+            var customerWithSameEmail = await customerRepository.Get(request.Email);
         
             if (customerWithSameEmail != Customer.Empty)
                 return Conflict(new{ Error = $"Email {request.Email} already exists"});
 
             var customer = new Customer(request.Email);
-            await _customerRepository.Create(customer);
+            await customerRepository.Create(customer);
 
             return Ok(customer);
+        }
+        catch (Exception e)
+        {
+            return Problem(title: e.Message, detail: e.StackTrace);
+        }
+    }
+    
+    [HttpGet("{id:guid}/notifications")]
+    public async Task<IActionResult> Notifications(
+        Guid id, 
+        [FromServices] ICustomerRepository customerRepository, 
+        [FromServices] INotificationRepository notificationRepository)
+    {
+        try
+        {
+            var customer = await customerRepository.Get(id);
+
+            if (customer == Customer.Empty)
+                return NotFound(new {Error = $"Customer {id} not found"});
+
+            var notifications = await notificationRepository.GetByCustomerId(id);
+            
+            return Ok(notifications);
         }
         catch (Exception e)
         {
@@ -78,7 +94,7 @@ public class CustomersController : ControllerBase
     {
         try
         {
-            var customer = await _customerRepository.Get(id);
+            var customer = await customerRepository.Get(id);
 
             if (customer == Customer.Empty)
                 return NotFound(new {Error = $"Customer {id} not found"});
@@ -99,7 +115,7 @@ public class CustomersController : ControllerBase
     {
         try
         {
-            var customer = await _customerRepository.Get(id);
+            var customer = await customerRepository.Get(id);
 
             if (customer == Customer.Empty)
                 return NotFound(new {Error = $"Customer {id} not found"});
@@ -114,5 +130,4 @@ public class CustomersController : ControllerBase
             return Problem(title: e.Message, detail: e.StackTrace);
         }
     }
-   
 }

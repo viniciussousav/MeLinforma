@@ -38,7 +38,7 @@ public class SendNotificationUseCase : ISendNotificationUseCase
 
             if (notification.Status == NotificationStatus.Succeeded)
             {
-                _logger.LogError("Notification {NotificationId} was already sent, skipping to avoid duplicated notifications", command.NotificationId);
+                _logger.LogWarning("Notification {NotificationId} was already sent, skipping to avoid duplicated notifications", command.NotificationId);
                 return Result.Skip<EmptyResult>();
             }
 
