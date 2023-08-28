@@ -6,6 +6,6 @@ public static class EndpointRouteBuilderExtensions
 {
     public static void AddHubs(this IEndpointRouteBuilder builder)
     {
-        builder.MapHub<WebNotificationHub>("meli-notifications");
+        builder.MapHub<NotificationsHub>("notifications");
     }
 }

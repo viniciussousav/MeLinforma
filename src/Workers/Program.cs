@@ -36,7 +36,6 @@ app.AddHubs();
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseHttpsRedirection();
 
 // Ensure database is created
 using (var scope = app.Services.CreateScope())

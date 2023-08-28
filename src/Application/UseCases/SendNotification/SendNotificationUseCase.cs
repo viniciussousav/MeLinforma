@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
 using Domain.Shared;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.SendNotification;
@@ -11,15 +12,15 @@ public class SendNotificationUseCase : ISendNotificationUseCase
 {
     private readonly ILogger<SendNotificationUseCase> _logger;
     private readonly INotificationRepository _notificationRepository;
-    // private readonly IWebNotificationHub _notificationHub;
+    private readonly IHubContext<NotificationsHub> _notificationsHub;
 
     public SendNotificationUseCase(
         ILogger<SendNotificationUseCase> logger, 
-        // IWebNotificationHub notificationHub, 
+        IHubContext<NotificationsHub> notificationsHub, 
         INotificationRepository notificationRepository)
     {
         _logger = logger;
-        // _notificationHub = notificationHub;
+        _notificationsHub = notificationsHub;
         _notificationRepository = notificationRepository;
     }
 
@@ -42,14 +43,7 @@ public class SendNotificationUseCase : ISendNotificationUseCase
                 return Result.Skip<EmptyResult>();
             }
 
-            // switch (command.Type)
-            // {
-            //     case NotificationType.Web:
-            //         await _notificationHub.TryNotifyNow(command.CustomerId, command.Title, command.Description);
-            //         break;
-            //     default:
-            //         throw new DomainException(ErrorMessages.NotSupportedNotificationType(command.NotificationId));
-            // }
+            await SendNotification(notification);
             
             notification.Sent();
             await _notificationRepository.Update(notification);
@@ -65,6 +59,27 @@ public class SendNotificationUseCase : ISendNotificationUseCase
         {
             _logger.LogError(e,"An unexpected exception occured handling Notification {NotificationId}", command.NotificationId);
             throw;
+        }
+    }
+
+    private async Task SendNotification(Notification notification)
+    {
+        try
+        {
+            switch (notification.Type)
+            {
+                case NotificationType.Web:
+                    await _notificationsHub.Clients.All.SendAsync(
+                        notification.CustomerId.ToString(), $"{notification.Title} - {notification.Description}");
+                    break;
+                default:
+                    throw new DomainException(ErrorMessages.NotSupportedNotificationType(notification.Id));
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e,"An unexpected exception occured on {SendNotification} for notification {NotificationId}",
+                nameof(SendNotification), notification.Id);
         }
     }
 }
