@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Net.Http.Json;
+using Client;
 using Microsoft.AspNetCore.SignalR.Client;
 
 Console.WriteLine("Bem vindo! Digite o seu código de usuário:");
@@ -73,8 +74,11 @@ void PrintNotifications(List<Notifications> notifications)
     });
 }
 
-public class Notifications
+namespace Client
 {
-    public string Title { get; init; }
-    public string Description { get; init; }
+    public class Notifications
+    {
+        public string Title { get; init; }
+        public string Description { get; init; }
+    }
 }
