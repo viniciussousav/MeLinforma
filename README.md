@@ -7,7 +7,7 @@ receiving feedback if each notification has been successfully processed or not.
 
 ## Overview
 
-![System Overview](system-overview.png)
+![System Overview](system-overview-2.png)
 
 ### Domain
 
@@ -84,6 +84,7 @@ notifications and also see them notification history.
 - [Postgresql (Database)](https://www.postgresql.org/)
 - [Entity Framework Core (ORM)](https://learn.microsoft.com/pt-br/ef/core/)
 - [SignalR (Realtime communication)](https://learn.microsoft.com/pt-br/aspnet/signalr/overview/getting-started/introduction-to-signalr)
+- [Apache Kafka](https://docs.confluent.io/kafka/overview.html)
 
 ## Running Application
 
