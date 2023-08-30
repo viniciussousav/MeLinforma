@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using Domain.Entities;
+using Domain.Enums;
 using Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
@@ -20,7 +21,13 @@ public class FailNotificationUseCase : IFailNotificationUseCase
         try
         {
             var notification = await _notificationRepository.Get(command.NotificationId);
-
+            
+            if (notification == Notification.Empty)
+            {
+                _logger.LogInformation("Notification {NotificationId} does not exists", command.NotificationId);
+                return;
+            }
+            
             if (notification.Status == NotificationStatus.Failed)
             {
                 _logger.LogInformation("Notification {NotificationId} is already failed", command.NotificationId);

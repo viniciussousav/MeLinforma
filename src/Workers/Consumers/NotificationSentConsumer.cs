@@ -24,7 +24,7 @@ public class NotificationSentConsumer : IConsumer<NotificationSent>
         try
         {
             var notificationSent = context.Message;
-            var command = new ConfirmNotificationCommand { NotificationId = notificationSent.NotificationId};
+            var command = new ConfirmNotificationCommand(notificationSent.NotificationId);
             
             await using var scope = _serviceScopeFactory.CreateAsyncScope();
             var useCase = scope.ServiceProvider.GetRequiredService<IConfirmNotificationUseCase>();
