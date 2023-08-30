@@ -17,13 +17,7 @@ public static class NotificationCreatedMapper
     
     public static SendNotificationCommand MapToSendNotificationCommand(this NotificationCreated message)
     {
-        return new SendNotificationCommand
-        {
-            NotificationId = message.NotificationId,
-            Description = message.Description,
-            Title = message.Title,
-            CustomerId = message.CustomerId
-        };
+        return new SendNotificationCommand(message.NotificationId);
     }
     
     public static NotificationSent MapToNotificationSent(this NotificationCreated message)

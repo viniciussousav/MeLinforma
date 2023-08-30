@@ -12,19 +12,22 @@ public class SendNotificationUseCase : ISendNotificationUseCase
 {
     private readonly ILogger<SendNotificationUseCase> _logger;
     private readonly INotificationRepository _notificationRepository;
+    private readonly ICustomerRepository _customerRepository;
     private readonly IHubContext<NotificationsHub> _notificationsHub;
 
     public SendNotificationUseCase(
         ILogger<SendNotificationUseCase> logger, 
         IHubContext<NotificationsHub> notificationsHub, 
-        INotificationRepository notificationRepository)
+        INotificationRepository notificationRepository, 
+        ICustomerRepository customerRepository)
     {
         _logger = logger;
         _notificationsHub = notificationsHub;
         _notificationRepository = notificationRepository;
+        _customerRepository = customerRepository;
     }
 
-    public async Task<Result<EmptyResult>> Execute(SendNotificationCommand command)
+    public async Task<Result<Notification>> Execute(SendNotificationCommand command)
     {
         try
         {
@@ -34,26 +37,35 @@ public class SendNotificationUseCase : ISendNotificationUseCase
             {
                 _logger.LogError("Notification {NotificationId} does not exist at {SendNotificationUseCase}",
                     command.NotificationId, nameof(SendNotificationUseCase));
-                return Result.Fail<EmptyResult>(ErrorMessages.NotificationNotFound(command.NotificationId));
+                return Result.Fail<Notification>(ErrorMessages.NotificationNotFound(command.NotificationId));
             }
 
             if (notification.Status == NotificationStatus.Succeeded)
             {
                 _logger.LogWarning("Notification {NotificationId} was already sent, skipping to avoid duplicated notifications", command.NotificationId);
-                return Result.Skip<EmptyResult>();
+                return Result.Skip<Notification>();
             }
 
+            var customer = await _customerRepository.Get(notification.CustomerId);
+
+            if (customer == Customer.Empty || !customer.Subscribed)
+            {
+                _logger.LogError("Customer {CustomerId} is not valid", notification.CustomerId);
+                var error = new Error("Customer", $"Customer {notification.CustomerId} is not valid to be notified");
+                return Result.Fail<Notification>(error);
+            }
+            
             await SendNotification(notification);
             
             notification.Sent();
             await _notificationRepository.Update(notification);
             
-            return Result.Success(EmptyResult.Empty);
+            return Result.Success(notification);
         }
         catch (DomainException e)
         {
             _logger.LogWarning(e, "An DomainException occured sending Notification {NotificationId}, skipping to avoid duplicated notifications", command.NotificationId);
-            return Result.Skip<EmptyResult>();
+            return Result.Skip<Notification>();
         }
         catch (Exception e)
         {

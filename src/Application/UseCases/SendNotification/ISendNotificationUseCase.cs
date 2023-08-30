@@ -1,8 +1,9 @@
-﻿using Domain.Shared;
+﻿using Domain.Entities;
+using Domain.Shared;
 
 namespace Application.UseCases.SendNotification;
 
 public interface ISendNotificationUseCase
 {
-    Task<Result<EmptyResult>> Execute(SendNotificationCommand command);
+    Task<Result<Notification>> Execute(SendNotificationCommand command);
 }

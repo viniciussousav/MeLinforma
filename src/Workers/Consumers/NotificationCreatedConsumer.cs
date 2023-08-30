@@ -32,7 +32,7 @@ public class NotificationCreatedConsumer : IConsumer<NotificationCreated>
 
             if (!result.IsValid)
             {
-                var notificationFailed = notificationCreated.MapToNotificationFailed();
+                var notificationFailed = notificationCreated.MapToNotificationFailed(result.Errors.ToArray());
                 await _bus.Publish(notificationFailed);
                 _logger.LogWarning("Notification {NotificationId} failed message produced", notificationCreated.NotificationId);
                 return;
